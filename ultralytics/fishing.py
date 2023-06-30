@@ -20,8 +20,8 @@ class ClassName(BaseScript):  # Название класса (должен от
         """                   Ключи - Обязательное                   """
 
         self.name = "fluxing"  # имя в базе ключей
-        self.keys = self.keys_data[self.name]  # загрузка настройки всех ключей данного скрипта
-        self.keyActivate = self.keys["activate_key"]  # кнопка активации скрипта
+        #self.keys = self.keys_data[self.name]  # загрузка настройки всех ключей данного скрипта
+        #self.keyActivate = self.keys["activate_key"]  # кнопка активации скрипта
         # обязательно скопировать ключ-значение "base", и переименовать согласно значению в self.name
         """ Полезное, но имеющее значение по дефолту, удалить при ненадобности """
 
