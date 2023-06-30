@@ -307,14 +307,18 @@ class ClassName(BaseScript):  # Название класса (должен от
         losted = False
         #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         while True:
+
             while not losted:
 
                 self.lkmpress()
                 sleep(0.4)
                 self.lkmrelease()
-
-                while True:
+                sleep(3.5)
+                while not losted:
                     self.getNextFrame()
+
+
+
                     if self.checklost():
                         print("LOST YOUR BAIT")
                         losted=True
@@ -332,8 +336,20 @@ class ClassName(BaseScript):  # Название класса (должен от
                     break
                 sleep(3)
                 counter =0
-                while True:
+                pkmtimer = time()
+                while not losted:
                     self.getNextFrame()
+                    while time()-pkmtimer > 4:
+                        self.getNextFrame()
+                        if self.checklost():
+                            print("LOST YOUR BAIT")
+                            losted = True
+                            break
+                        self.pkmpress()
+                        if time()-pkmtimer > 5:
+                            self.pkmrelease()
+                            pkmtimer= time()
+                            break
                     ###
                     if self.checklost():
                         print("LOST YOUR BAIT")
