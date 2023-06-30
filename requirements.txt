@@ -1,3 +1,0 @@
-pyautoit
-pyautogui
-keyboard

@@ -41,3 +41,15 @@ psutil  # system utilization
 # albumentations>=1.0.3
 # pycocotools>=2.0.6  # COCO mAP
 # roboflow
+
+# CUSToM ----------------------------------------
+colorama~=0.4.6
+pyautoit
+pyautogui
+keyboard
+pywin32
+dxcam
+omegaconf
+telebot
+points
+pyTelegramBotAPI
