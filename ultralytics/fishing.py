@@ -42,9 +42,9 @@ class ClassName(BaseScript):  # Название класса (должен от
         # initialize the WindowCapture class
         self.camera = dxcam.create()
         self.restart = False
-        self.USER1_ID = self.keys['key17']['value']
-        self.USER2_ID = self.keys['key18']['value']
-        self.TOKEN = self.keys['key19']['value']
+        #self.USER1_ID = self.keys['key17']['value']
+        #self.USER2_ID = self.keys['key18']['value']
+        #self.TOKEN = self.keys['key19']['value']
         self.target_fps = 59
         self.bot = telega.Telega(self.USER1_ID,self.USER2_ID, self.TOKEN)
         self.SleepMode=False
@@ -303,7 +303,7 @@ class ClassName(BaseScript):  # Название класса (должен от
 
         self.getNextFrame()
         sleep(1)
-        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, imgsz=640, batch=2)
+        Prediction = self.model.predict(source=self.img, device=0, conf=0.2, imgsz=640, batch=8)
         losted = False
         #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         while True:
@@ -339,14 +339,14 @@ class ClassName(BaseScript):  # Название класса (должен от
                 pkmtimer = time()
                 while not losted:
                     self.getNextFrame()
-                    while time()-pkmtimer > 4:
+                    while time()-pkmtimer > 6:
                         self.getNextFrame()
                         if self.checklost():
                             print("LOST YOUR BAIT")
                             losted = True
                             break
                         self.pkmpress()
-                        if time()-pkmtimer > 5:
+                        if time()-pkmtimer > 7:
                             self.pkmrelease()
                             pkmtimer= time()
                             break
