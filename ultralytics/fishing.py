@@ -50,7 +50,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         self.SleepMode=False
         self.stop = False
         self.lkmpressed = False
-
+        self.pkmpressed = False
         self.hwnd = win32gui.FindWindow(None, 'Mortal Online 2  ')
         # hwnd = win32gui.FinwdWindow("UnrealWindow", None) # Fortnite
         self.rect = win32gui.GetWindowRect(self.hwnd)
@@ -96,6 +96,18 @@ class ClassName(BaseScript):  # Название класса (должен от
             self.lkmpressed = True
             return True
         return False
+    def pkmpress(self):
+        if not self.pkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+            self.pkmpressed = True
+            return True
+        return False
+    def pkmrelease(self):
+        if self.pkmpressed:
+            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, 0, 0)
+            self.pkmpressed = False
+            return True
+        return False
 
     def lkmrelease(self):
         if self.lkmpressed:
@@ -125,17 +137,73 @@ class ClassName(BaseScript):  # Название класса (должен от
                 return False
         else:
             return False
-    def checkdrawnspirit(self):
+    def checklost(self):
 
         # Read the images from the file
-        self.getNextFrame()
-        img = self.img[358:372, 223:253]
-        if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png"):
-            self.getNextFrame()
-            if self.imgfind(img, "drawnthespirit.png", "drawnthespiritmask.png"):
+        img = self.img[348:382, 300:353]
+        if self.imgfind(img, "lost1.png", "lost1mask.png"):
+            return True
+        else:
+            return False
+    def equiprod(self):
+
+        # Read the images from the file
+        img = self.img[80:280, 0:200]
+        mxLoc = self.imgfind(img, "rod.png", "rodmask.png",loc=True)
+        if  mxLoc is not None:
+            self.mousemove(mxLoc[0]-320 +10,mxLoc[1]-320+80 +10)
+            sleep(0.5)
+            self.pkmpress()
+            sleep(0.1)
+            self.pkmrelease()
+            return True
+        else:
+            mxLoc = self.imgfind(img, "rod1.png", "rod1mask.png", loc=True)
+            if mxLoc is not None:
+                self.mousemove(mxLoc[0] - 320 + 10, mxLoc[1] - 320 + 80 + 10)
+                sleep(0.5)
+                self.pkmpress()
+                sleep(0.1)
+                self.pkmrelease()
                 return True
             else:
                 return False
+    def equiphook(self):
+
+        # Read the images from the file
+        img = self.img[80:280, 0:200]
+        mxLoc = self.imgfind(img, "hook.png", "hookmask.png",loc=True)
+        if  mxLoc is not None:
+            self.mousemove(mxLoc[0]-320 +10,mxLoc[1]-320+80 +10)
+            sleep(0.5)
+            self.pkmpress()
+            sleep(0.1)
+            self.pkmrelease()
+            return True
+        else:
+            mxLoc = self.imgfind(img, "hook1.png", "hook1mask.png", loc=True)
+            if mxLoc is not None:
+                self.mousemove(mxLoc[0] - 320 + 10, mxLoc[1] - 320 + 80 + 10)
+                sleep(0.5)
+                self.pkmpress()
+                sleep(0.1)
+                self.pkmrelease()
+                return True
+            else:
+                return False
+
+    def equipline(self):
+
+        # Read the images from the file
+        img = self.img[80:280, 0:200]
+        mxLoc = self.imgfind(img, "line.png", "linemask.png",loc=True)
+        if  mxLoc is not None:
+            self.mousemove(mxLoc[0]-320 +10,mxLoc[1]-320+80 +10)
+            sleep(0.5)
+            self.pkmpress()
+            sleep(0.1)
+            self.pkmrelease()
+            return True
         else:
             return False
     def checklowmana(self , percentage = None , ignoresafemode = False ):
@@ -153,7 +221,7 @@ class ClassName(BaseScript):  # Название класса (должен от
                 result = False
         return result
 
-    def imgfind(self, large_image, small_img, mask, conf=0.69 ):
+    def imgfind(self, large_image, small_img, mask, conf=0.8, loc = False ):
 
         # Read the images from the file
         small_image = cv.imread(small_img)
@@ -161,12 +229,16 @@ class ClassName(BaseScript):  # Название класса (должен от
         method = cv.TM_CCOEFF_NORMED
         result = cv.matchTemplate(large_image, small_image, method, None, mask)
         # We want the minimum squared difference
-        _, mx, mxLoc, _ = cv.minMaxLoc(result)
+        _, mx, _, mxLoc = cv.minMaxLoc(result)
         print(mx)
         if mx > conf and mx < 1.1:
             self.NoAnsweredThecalltime = time()
+            if loc:
+                return mxLoc
             return True
         else:
+            if loc:
+                return None
             return False
 
     def blackScreenDetect(self):
@@ -190,45 +262,104 @@ class ClassName(BaseScript):  # Название класса (должен от
             return True
         else:
             return False
-
-    def custom(self):
+    def reequip(self):
+        self.press('z')
+        sleep(0.1)
+        self.equiprod()
+        sleep(0.3)
+        self.press('z')
+        sleep(2.5)
+        self.press('x')
         sleep(1)
+        self.equiphook()
+        sleep(0.6)
+        self.press('z')
+        sleep(0.6)
+        self.press('z')
+        sleep(0.5)
+        self.equipline()
+        sleep(0.6)
+        self.press('z')
+    def mousemove(self, x, y, timer=0.01):
+
+        n = int(max(abs(x) / 70, abs(y) / 70))
+
+        if abs(x) > 0 or abs(y) > 0:
+            if n > 0:
+                xstep = int(x / n)
+                ystep = int(y / n)
+                xlast = x - xstep * n
+                ylast = y - ystep * n
+                timestep = timer / n
+                for _ in range(n):
+                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xstep, ystep, 0, 0)
+                    sleep(timestep)
+
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, xlast, ylast, 0, 0)
+            else:
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y, 0, 0)
+                sleep(timer)
+    def custom(self):
+
         self.getNextFrame()
+        sleep(1)
         Prediction = self.model.predict(source=self.img, device=0, conf=0.2, imgsz=640, batch=2)
+        losted = False
         #self.camera.start(region=(8+self.rect[0], 31+self.rect[1], 640+self.rect[0]-8, 640+self.rect[1]-31), target_fps=self.target_fps)
         while True:
+            while not losted:
 
-            self.lkmpress()
-            sleep(2)
-            self.lkmrelease()
+                self.lkmpress()
+                sleep(0.4)
+                self.lkmrelease()
 
-            while True:
-                self.getNextFrame()
+                while True:
+                    self.getNextFrame()
+                    if self.checklost():
+                        print("LOST YOUR BAIT")
+                        losted=True
+                        break
+                        ###
+                    Prediction = self.model.predict(source=self.img, device=0, conf=0.01, imgsz=640,batch=2)
+                    print(Prediction[0].probs.top1,Prediction[0].probs.top1conf)
+                    if Prediction[0].probs.top1 == 2 or (Prediction[0].probs.top1 == 1 and Prediction[0].probs.top5[1] == 2):
+                        print("PULL")
+                        self.lkmpress()
+                        break
+                if self.checklost():
+                    print("LOST YOUR BAIT")
+                    losted = True
+                    break
+                sleep(3)
+                counter =0
+                while True:
+                    self.getNextFrame()
                     ###
-                Prediction = self.model.predict(source=self.img, device=0, conf=0.2, imgsz=640,batch=2)
-                print(Prediction[0].probs.top1,Prediction[0].probs.top1conf)
-                if Prediction[0].probs.top1 == 2 and Prediction[0].probs.top1conf >0.4:
-                    print("PULL")
-                    self.lkmpress()
-                    break
-            sleep(3)
-            counter =0
-            while True:
-                self.getNextFrame()
-                ###
-                Prediction = self.model.predict(source=self.img, device=0, conf=0.2, imgsz=640, batch=2)
-                print(Prediction[0].probs.top1, Prediction[0].probs.top1conf)
-                if Prediction[0].probs.top1 == 0 and Prediction[0].probs.top1conf > 0.95:
-                    counter+=1
+                    if self.checklost():
+                        print("LOST YOUR BAIT")
+                        losted = True
+                        break
+                    Prediction = self.model.predict(source=self.img, device=0, conf=0.01, imgsz=640, batch=2)
+                    print(Prediction[0].probs.top1, Prediction[0].probs.top1conf)
+                    if Prediction[0].probs.top1 == 0  or (Prediction[0].probs.top1 == 1 and Prediction[0].probs.top5[1] == 0):
+                        counter+=1
 
-                else:
-                    counter =0
-                if counter>5:
-                    print("GOT IT")
-                    self.lkmrelease()
+                    else:
+                        counter =0
+                    if counter>5:
+                        print("GOT IT")
+                        self.lkmrelease()
+                        break
+                if self.checklost():
+                    print("LOST YOUR BAIT")
+                    losted = True
                     break
-            sleep(1)
-            #sleep(1)
+                sleep(1)
+                #sleep(1)
+            sleep(5)
+            self.reequip()
+            sleep(2)
+            losted = False
         ###
 
         self.camera.stop()
