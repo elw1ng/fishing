@@ -46,7 +46,7 @@ class ClassName(BaseScript):  # Название класса (должен от
         #self.USER2_ID = self.keys['key18']['value']
         #self.TOKEN = self.keys['key19']['value']
         self.target_fps = 59
-        self.bot = telega.Telega(self.USER1_ID,self.USER2_ID, self.TOKEN)
+        #self.bot = telega.Telega(self.USER1_ID,self.USER2_ID, self.TOKEN)
         self.SleepMode=False
         self.stop = False
         self.lkmpressed = False
